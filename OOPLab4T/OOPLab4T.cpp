@@ -3,7 +3,7 @@
 // Він містинь функцію "main" з якої починається та закінчується виконання програми.
 //
 
-
+ /*
 #include <iostream>
 #include <stdexcept>
 
@@ -109,64 +109,63 @@ void main() {
     // Друк елементів вектора
     v.print();
 
-    
+   */
 }
 
-/*
+
 
 #include <iostream>
-#include <map>
+#include <vector>
 #include <string>
+
+struct CountryCapitalPair {
+    std::string country;
+    std::string capital;
+};
 
 class CountryCapitalMap {
 private:
-    std::map<std::string, std::string> countryCapitalPairs;
+    std::vector<CountryCapitalPair> pairs;
 
 public:
     int codeError; // 0 - ok, 1 - key not found
 
     CountryCapitalMap() : codeError(0) {}
-    
-    // Додати пару країна - столиця до асоціативного масиву
+
     void addPair(const std::string& country, const std::string& capital) {
-        countryCapitalPairs[country] = capital;
+        pairs.push_back({ country, capital });
     }
 
-    // Перевантаження оператора індексації для звернення до столиці за назвою країни
     std::string& operator[](const std::string& country) {
-        auto it = countryCapitalPairs.find(country);
-        if (it != countryCapitalPairs.end()) {
-            codeError = 0; // Знайдено
-            return it->second; // Повернути столицю
+        for (auto& pair : pairs) {
+            if (pair.country == country) {
+                codeError = 0;
+                return pair.capital;
+            }
         }
-        else {
-            codeError = 1; // Ключ не знайдено
-            static std::string empty; // Повернути порожній рядок
-            return empty;
-        }
+        codeError = 1;
+        static std::string empty;
+        return empty;
     }
 
-    // Перевантаження оператора виклику функції для звернення до столиці за назвою країни
     std::string& operator()(const std::string& country) {
         return (*this)[country];
     }
 
-    // Вивід асоціативного масиву на екран
     friend std::ostream& operator<<(std::ostream& os, const CountryCapitalMap& map) {
-        for (const auto& pair : map.countryCapitalPairs) {
-            os << pair.first << " - " << pair.second << std::endl;
+        for (const auto& pair : map.pairs) {
+            os << pair.country << " - " << pair.capital << std::endl;
         }
         return os;
     }
 
-    // Введення асоціативного масиву з консолі
     friend std::istream& operator>>(std::istream& is, CountryCapitalMap& map) {
         std::string country, capital;
-        std::cout << "Enter country-capital pairs (Enter 'break' to finish):\n";
+        std::cout << "Enter country-capital pairs (Enter 'end' to finish):\n";
         while (true) {
             std::cout << "Country: ";
             std::getline(is, country);
-            if (country == "break") break;
+            if (country == "end") break;
             std::cout << "Capital: ";
             std::getline(is, capital);
             map.addPair(country, capital);
@@ -181,15 +180,12 @@ int main() {
 
     std::cout << "\nCountry-Capital Pairs:\n";
     std::cout << countries;
-    
-    // Приклад використання оператора індексації []
+
     std::cout << "\nCapital of Ukraine: " << countries["Ukraine"] << std::endl;
 
-    // Перевірка коду помилки
     if (countries.codeError == 1) {
         std::cout << "Error: Country not found!\n";
     }
 
     return 0;
 }
-*/
